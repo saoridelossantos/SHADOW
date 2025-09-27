@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css"/>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    
+  
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500&family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+
+  <title>Protección de Ciberseguridad</title>
+  <style>
+    body {
+      background-color: #8db9bb;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2.5em;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 95%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    th {
+      background: #1d6474;
+      color: white;
+      padding: 12px;
+      text-align: center;
+    }
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      vertical-align: middle;
+    }
+    img {
+      max-width: 150px;
+      border-radius: 10px;
+    }
+    tr:nth-child(even) {
+      background-color: #a6d3e0;
+    }
+    tr:hover {
+      background-color: #6398a3;
+      color: white;
+    }
+    .btn {
+      margin-top: 20px;
+      border-radius: 25px;
+      padding: 10px 25px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Protección de Ciberseguridad</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Ataque</th>
+        <th>Descripción</th>
+        <th>Impacto</th>
+        <th>Ejemplo</th>
+        <th>Imagen</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-proteccion"></tbody>
+  </table>
+  <a href="index.html" class="btn btn-primary">Regresar</a>
+
+     <script>
+  const ataques = [
+    {
+      "ataque": "Phishing",
+      "descripcion": "Engaña al usuario para robar credenciales mediante correos o sitios falsos.",
+      "impacto": "Robo de identidad, pérdida de datos.",
+      "ejemplo": "Correo falso de un banco solicitando datos personales.",
+      "imagen": "https://back.sise.edu.pe/uploads/seguridad_informacion_ciberseguridad_bbe039cc10.jpg"
+    },
+    {
+      "ataque": "Malware",
+      "descripcion": "Software malicioso diseñado para dañar, interrumpir o robar información.",
+      "impacto": "Pérdida de información, control remoto del equipo, corrupción de datos.",
+      "ejemplo": "Descarga de software gratuito infectado.",
+      "imagen": "https://academy.avast.com/hs-fs/hubfs/New_Avast_Academy/what_is_malware_academy_refresh/Types-of-Malware-EN.png?width=1684&height=1200&name=Types-of-Malware-EN.png"
+    },
+    {
+      "ataque": "Ransomware",
+      "descripcion": "Cifra los archivos de la víctima y exige un rescate económico.",
+      "impacto": "Pérdida total de datos, impacto económico severo.",
+      "ejemplo": "WannaCry que afectó empresas en 2017.",
+      "imagen": "https://sectigostore.com/blog/wp-content/uploads/2021/02/what-is-ransomware-feature.jpg"
+    },
+    {
+      "ataque": "Ataques de fuerza bruta",
+      "descripcion": "Prueba todas las combinaciones posibles de contraseñas hasta encontrar la correcta.",
+      "impacto": "Acceso no autorizado a cuentas.",
+      "ejemplo": "Intentos automatizados para entrar a una cuenta de correo probando miles de contraseñas.",
+      "imagen": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfbzOnfPwkUFW-7W9suLtl8Bz3CmG5MvTwa6pUegP5zrAYf5cg6GXrP9tiqzNK-WIxFVAGH8p59fzibBqJ_ArqM3LRySpbcbfPokr_vz7PNPwXnqvkPuzIa-RiZZ8VMSxFx-GiZjiq8lR1W6ZzZGxi70mRW8gfRporQPRC0F_-SRGiUELdzSh0zpX8hwAv/s16000/Brute%20Force%20Attacks.png"
+    },
+    {
+      "ataque": "Denegación de Servicio (DoS/DDoS)",
+      "descripcion": "Inunda un servidor con tráfico masivo para dejarlo inaccesible.",
+      "impacto": "Interrupción de servicios críticos en línea; pérdidas económicas.",
+      "ejemplo": "Ataque DDoS contra servicios de una gran plataforma en línea.",
+      "imagen": "https://es.gridinsoft.com/img/article/ddos.jpg"
+    },
+    {
+      "ataque": "Man-in-the-Middle (MitM)",
+      "descripcion": "Intercepta la comunicación entre dos partes para robar o modificar información.",
+      "impacto": "Robo de credenciales, espionaje y alteración de datos.",
+      "ejemplo": "Interceptación de tráfico en una red Wi-Fi pública para obtener contraseñas.",
+      "imagen": "https://cibersafety.com/wp-content/uploads/2024/05/MITM.jpg"
+    },
+    {
+      "ataque": "SQL Injection",
+      "descripcion": "Inserción de código SQL malicioso en formularios web para manipular bases de datos.",
+      "impacto": "Robo o eliminación de datos, control de servidores.",
+      "ejemplo": "Inyección en un formulario de inicio de sesión sin validación.",
+      "imagen": "https://www.kiteworks.com/wp-content/uploads/2023/05/The-Anatomy-of-an-SQL-Injection-Attack-and-How-to-Avoid-One.jpg"
+    },
+    {
+      "ataque": "Cross-Site Scripting (XSS)",
+      "descripcion": "Inyección de scripts maliciosos en sitios web que se ejecutan en el navegador.",
+      "impacto": "Robo de cookies, secuestro de sesiones y manipulación de usuarios.",
+      "ejemplo": "Comentario en un foro que ejecuta un script para robar cookies.",
+      "imagen": "https://tcm-sec.com/wp-content/uploads/2023/03/What-is-Cross-Site-Scripting-XSS-1080x628.png"
+    },
+    {
+      "ataque": "Zero-Day Attack",
+      "descripcion": "Explotación de vulnerabilidades desconocidas antes de que exista parche.",
+      "impacto": "Compromiso de sistemas antes de que se pueda mitigar.",
+      "ejemplo": "Ataques que aprovechan fallos recién descubiertos en un sistema operativo.",
+      "imagen": "https://cadgulf.com/wp-content/uploads/2023/04/Zero-Day-Attack-768x379.png"
+    },
+    {
+      "ataque": "Keylogger",
+      "descripcion": "Programa que registra cada pulsación de teclado.",
+      "impacto": "Robo de contraseñas, mensajes y datos bancarios.",
+      "ejemplo": "Infección tras abrir un archivo adjunto malicioso que instala un keylogger.",
+      "imagen": "https://www.keylogger.org/img/article/keylogger-guide.jpg"
+    },
+    {
+      "ataque": "Ingeniería Social",
+      "descripcion": "Manipulación psicológica para obtener información sensible.",
+      "impacto": "Robo de identidad y acceso a sistemas sin necesidad de explotar software.",
+      "ejemplo": "Un atacante se hace pasar por técnico de soporte para obtener credenciales.",
+      "imagen": "https://static.wixstatic.com/media/fcb8b4_5e886c798dfa468da7f3d6ce17801f87~mv2.png/v1/fill/w_1080,h_608,al_c/fcb8b4_5e886c798dfa468da7f3d6ce17801f87~mv2.png"
+    },
+    {
+      "ataque": "Supply Chain Attack",
+      "descripcion": "Compromete software o hardware en la cadena de suministro.",
+      "impacto": "Compromete a muchas empresas con una sola intrusión.",
+      "ejemplo": "Inserción de código malicioso en una librería usada por cientos de aplicaciones.",
+      "imagen": "https://cdn.prod.website-files.com/5ff66329429d880392f6cba2/666841a90d1e4517b63ce553_8%20-%2010.06-min.jpg"
+    }
+  ];
+    const tbody = document.getElementById("tabla-proteccion");
+    ataques.forEach(a => {
+      let fila = `<tr>
+        <td>${a.ataque}</td>
+        <td>${a.descripcion}</td>
+        <td>${a.impacto}</td>
+        <td>${a.ejemplo}</td>
+        <td><img src="${a.imagen}" alt="${a.ataque}"></td>
+      </tr>`;
+      tbody.innerHTML += fila;
+    });
+  </script>
+</body>
+</html>
