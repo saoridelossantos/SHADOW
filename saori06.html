@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Películas Studio Ghibli</title>
+
+    <style>
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; 
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            
+            background-image: url('https://i.pinimg.com/1200x/02/57/04/025704325220667d0634eb0fcb2824eb.jpg');
+            background-size: cover;
+            background-position: center;
+            
+            color: white;
+            padding: 60px 20px; 
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        
+        header h1, header p {
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); 
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        h2 {
+            color: #0b2e13;
+            border-bottom: 2px solid #a8c388; 
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        
+        .controls-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #api-controls button {
+            padding: 10px 15px;
+            background-color: #07796f; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #api-controls button:hover {
+            background-color: #23c0b0;
+        }
+
+
+        
+        .film-grid {
+            display: grid;
+            
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 25px;
+            padding: 10px 0;
+        }
+
+        
+        .film-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .film-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .film-card h3 {
+            color: #1a4d2e;
+            margin-top: 0;
+        }
+
+        
+        .film-poster {
+            width: 100%; 
+            height: auto;
+            max-height: 400px; 
+            object-fit: cover; 
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        
+        #integrantes-section {
+            background-color: #07796f;
+            color: rgb(255, 255, 255);
+            padding: 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #integrantes-section hr {
+            border-color: #5c8d89;
+            margin: 20px auto;
+            width: 50%;
+        }
+
+        .integrantes-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .integrantes-list li {
+            padding: 3px 0;
+        }
+
+        .final-note {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-top: 15px;
+        }
+    </style>
+    </head>
+<body>
+
+    <header>
+        <h1>Catálogo de Películas del Studio Ghibli</h1>
+        <p>Películas de Hayao Miyazaki</p>
+    </header>
+
+    <main>
+        <section id="api-controls">
+            <h2>Filtros y Controles</h2>
+            <div class="controls-container">
+                <button id="btn-sort-year">Ordenar por Año</button>
+                <button id="btn-sort-score">Ordenar por Puntuación</button>
+            </div>
+        </section>
+
+        <section id="ghibli-films">
+            <h2>Películas Disponibles</h2>
+            <div id="films-container" class="film-grid">
+                <p>Cargando datos de la API...</p>
+            </div>
+        </section>
+    </main>
+    
+    <hr>
+
+    <footer id="integrantes-section">
+        <h2>Trabajo hecho por :</h2>
+        <ul class="integrantes-list">
+            <li>Saori Alejandra De Los Santos: INDEX.HTML</li>
+            <li>Divanny Josselyn Torres Cortes: SCRIPT.JS</li>
+            <li>Yamileth Garcia Torres: STYLES.CSS</li>
+        </ul>
+        <p class="final-note">:D</p>
+    </footer>
+
+    <script>
+        const FILMS_CONTAINER = document.getElementById('films-container');
+        const API_URL = 'https://ghibliapi.vercel.app/films';
+
+        
+        let ghibliFilms = []; 
+
+        
+        const btnSortYear = document.getElementById('btn-sort-year');
+        const btnSortScore = document.getElementById('btn-sort-score');
+
+
+        
+        const POSTER_MAP = {
+            "Castle in the Sky": "https://m.media-amazon.com/images/M/MV5BYTJhNWIxNmUtYThlYy00NGNmLWE4NTItZWY5MmI4ZWNhMTNkXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "Grave of the Fireflies": "https://m.media-amazon.com/images/M/MV5BNTY5MmE2OGMtN2IxNC00MDY4LTkwMGEtZDUzOTYyNWE0ZTNjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "My Neighbor Totoro": "https://www.moriareviews.com/rongulator/wp-content/uploads/My-Neighbor-Totoro-1988-poster.jpg",
+            "Kiki's Delivery Service": "https://m.media-amazon.com/images/I/91KTif2rX6L.jpg",
+            "Only Yesterday": "https://m.media-amazon.com/images/M/MV5BMTY5NjI2MjQxMl5BMl5BanBnXkFtZTgwMDA2MzM2NzE@._V1_FMjpg_UX1000_.jpg",
+            "Porco Rosso": "https://static.wikia.nocookie.net/doblaje/images/1/1d/Porco_Rosso_Portada.jpg/revision/latest?cb=20200301112423&path-prefix=es",
+            "Pom Poko": "https://images.justwatch.com/poster/48434395/s718/pompoko.jpg",
+            "Whisper of the Heart": "https://m.media-amazon.com/images/M/MV5BZWVlOGNlYjgtYWE4Yi00MjdiLWE1MTEtZTRmNzI1ODk5NzMzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "Princess Mononoke": "https://m.media-amazon.com/images/I/814f6gcwaaL.jpg",
+            "My Neighbors the Yamadas": "https://m.media-amazon.com/images/M/MV5BMTUyMzk0MDE1OF5BMl5BanBnXkFtZTcwMzc4MjAzMQ@@._V1_.jpg",
+            "Spirited Away": "https://m.media-amazon.com/images/M/MV5BNTEyNmEwOWUtYzkyOC00ZTQ4LTllZmUtMjk0Y2YwOGUzYjRiXkEyXkFqcGc@._V1_.jpg",
+            "The Cat Returns": "https://static.wikia.nocookie.net/greatestmovies/images/8/87/The_Cat_Returns.jpg/revision/latest?cb=20231102235833",
+            "Howl's Moving Castle": "https://www.lab-1.nl/wp-content/uploads/2024/01/howels-moving-castle-ps1.jpg",
+            "Tales from Earthsea": "https://static.wikia.nocookie.net/studio-ghibli/images/5/53/Tales_From_Earthsea.png/revision/latest?cb=20220212050455",
+            "Ponyo": "https://m.media-amazon.com/images/M/MV5BZDkzMzQ5ZmQtOTA3MC00MjhiLTk5M2UtNzk0MjEzZmVjN2UxXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "Arrietty": "https://static.wikia.nocookie.net/studio-ghibli/images/f/f7/The_Secret_World_of_Arrietty.jpg/revision/latest?cb=20210306220734",
+            "From Up on Poppy Hill": "https://m.media-amazon.com/images/M/MV5BMWVjMWRhMzYtOGRmMi00ODExLTk2M2YtZDhjNGY5OWQ5NDY4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "The Wind Rises": "https://static.wikia.nocookie.net/studio-ghibli/images/2/2d/The_Wind_Rises.jpg/revision/latest/scale-to-width-down/1200?cb=20220209132042",
+            "The Tale of the Princess Kaguya": "https://static.wikia.nocookie.net/studio-ghibli/images/8/87/The_Tale_of_the_Princess_Kaguya.jpg/revision/latest?cb=20220414000919",
+            "When Marnie Was There": "https://es.web.img2.acsta.net/pictures/16/02/08/12/58/542941.jpg",
+            "The Red Turtle": "https://image.tmdb.org/t/p/original/hDc9h35TF1J66GfCAZjFidItoAa.jpg",
+            "Earwig and the Witch": "https://m.media-amazon.com/images/M/MV5BZDUxNzc1OTItY2NhNS00M2VmLWJlOWUtNjliZTg5MGI0Nzk5XkEyXkFqcGc@._V1_.jpg",
+            "How Do You Live?": "https://www.funeralnatural.net/sites/default/files/2024-11/elchicoylagazar_cartel.jpg"
+        };
+
+
+        
+        async function fetchGhibliFilms() {
+            try {
+                FILMS_CONTAINER.innerHTML = '<p>Cargando datos de la API...</p>'; 
+
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                
+                ghibliFilms = data; 
+                
+                
+                displayFilms(ghibliFilms);
+
+            } catch (error) {
+                FILMS_CONTAINER.innerHTML = '<p class="error-message">❌ Error al cargar las películas. Verifica la conexión o la API.</p>';
+                console.error("Error al obtener datos:", error);
+            }
+        }
+
+
+        
+        function displayFilms(filmsArray) {
+            FILMS_CONTAINER.innerHTML = ''; 
+
+            filmsArray.forEach(film => {
+                const card = document.createElement('div');
+                card.classList.add('film-card');
+                
+                
+                const posterUrl = POSTER_MAP[film.title];
+
+                
+                const description = film.description || 'Sin sinopsis disponible.';
+                const score = film.rt_score || 'N/A';
+                
+                
+                card.innerHTML = `
+                    ${posterUrl ? `<img src="${posterUrl}" alt="Póster de ${film.title}" class="film-poster">` : ''}
+                    <h3>${film.title} (${film.release_date})</h3>
+                    <p><strong>Director:</strong> ${film.director}</p>
+                    <p><strong>Puntuación (RT):</strong> ${score}/100</p>
+                    <details>
+                        <summary>Ver Sinopsis</summary>
+                        <p>${description}</p>
+                    </details>
+                `;
+
+                FILMS_CONTAINER.appendChild(card);
+            });
+        }
+
+
+        
+        function sortByYear() {
+            const sortedFilms = ghibliFilms.slice().sort((a, b) => {
+                return parseInt(a.release_date) - parseInt(b.release_date);
+            });
+            displayFilms(sortedFilms);
+            console.log("Películas ordenadas por año.");
+        }
+
+        
+        function sortByScore() {
+            const sortedFilms = ghibliFilms.slice().sort((a, b) => {
+                return parseInt(b.rt_score) - parseInt(a.rt_score);
+            });
+            displayFilms(sortedFilms);
+            console.log("Películas ordenadas por puntuación.");
+        }
+
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            fetchGhibliFilms(); 
+
+            if (btnSortYear) {
+                btnSortYear.addEventListener('click', sortByYear);
+            }
+            if (btnSortScore) {
+                btnSortScore.addEventListener('click', sortByScore);
+            }
+        });
+    </script> 
+    </body>
+</html>
